@@ -1,0 +1,11 @@
+Tools
+
+calc
+	calc is a command line calculator. It takes input from stdin, 
+and processes it as an expression, and outputs the result.
+
+dial
+	dial is a syntax highlighter for the Mainspring language. It takes
+input either from the command line, or a file specified as an argument 
+and outputs the file with colors representing the different types of 
+tokens found.
