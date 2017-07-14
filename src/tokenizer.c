@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include "host_config.h"
 #include "lang_config.h"
 #include "tokenizer.h"

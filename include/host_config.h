@@ -1,3 +1,6 @@
+#ifndef HOST_DEFINED
+#define HOST_DEFINED
+
 #define HOST_NONE 1
 #define HOST_LINUX 0
 #define HOST_BITS8 1
@@ -11,10 +14,14 @@
 	typedef unsigned long	dword;
 	typedef unsigned int	word;
 	typedef unsigned char	byte;
+	typedef byte			native;
 #endif
 #if (HOST_BITS64)
 	typedef unsigned long	qword;
 	typedef unsigned int	dword;
 	typedef unsigned short	word;
 	typedef unsigned char	byte;
+	typedef qword			native;
+#endif
+
 #endif

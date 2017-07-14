@@ -13,7 +13,10 @@
 
 #include <util/setbaud.h>
 
-void uart_init() {
+#include "tokenizer.h"
+
+void uart_init()
+{
 	UBRR0H = UBRRH_VALUE;
 	UBRR0L = UBRRL_VALUE;
 
@@ -28,20 +31,27 @@ void uart_init() {
 }
 
 
-void uart_putchar(unsigned char c) {
+void uart_putchar(unsigned char c)
+{
 	loop_until_bit_is_set(UCSR0A, UDRE0); /* Wait until data register empty. */
 	UDR0 = c;
 	loop_until_bit_is_set(UCSR0A, TXC0); /* Wait until transmission ready. */
 }
 
-void uart_write(char *data, unsigned int len)
+char uart_getchar()
+{
+	loop_until_bit_is_set(UCSR0A, RXC0); /* Wait until data exists. */
+	return UDR0;
+}
+
+
+void uart_write(const unsigned char *data, unsigned int len)
 {
 	PORTB = 0x20;
 	int i;
 	for (i=0; i < len; i++)
 	{
 		uart_putchar(data[i]);
-//		_delay_ms(10);
 	}
 	PORTB = 0x00;
 }
@@ -138,13 +148,34 @@ void i2c_scan()
 	}
 }
 
+// This is our test assembly code
+const static char text[] = 
+"rjump main\n"
+"main:\n"
+"ldi	r16,0xff\n"
+"out	ddrb,r16\n"
+"ldi	r16,0x00\n"
+"loop:\n"
+"com	r16\n"
+"out	portb,r16\n"
+"ldi	r17,100\n"
+"outer:\n"
+"ldi	zh,high(40000)\n"
+"ldi	zl,low(40000)\n"
+"inner:\n"
+"sbiw	zl,1\n"
+"brne	inner\n"
+"dec	r17\n"
+"brne	outer\n"
+"rjmp	loop\n";
+
+
 int main()
 {
-
 	unsigned int toggle = 0, i;
 	unsigned char data[8];
 
-	unsigned char out[] = "x: XXXX y: XXXX z: XXXX t: XXXX\n";
+	unsigned char out[] = "\n                              \n";
 
 	DDRB = 0x20; // LED is output
 	DDRD = 0x00;
@@ -159,23 +190,23 @@ int main()
 
 	_delay_ms(100);
 
-	i2c_scan();
+//	i2c_scan();
 
 //	for (i=0; i<0xff; i++)
 //		print_stat(i);
 
+	struct token toks[100];
 
-	i2c_start();
-	i2c_write((0x68<<1) | 0);// 0x68 addr | 0 for write
-	i2c_write(MPU_WAKEUP);
-	i2c_write(0);
-	i2c_stop();
+	int tlen = count_tokens(text,100);
 
+//	toks = (struct token *)malloc(sizeof(struct token)*(tlen+1));
+
+	tokenize(text, 100, toks);
 
 	while (1)
 	{
 
-//		PORTB = toggle;
+		PORTB = toggle;
 //		for (i=0;i<250;i++)
 			_delay_ms(50);
 //		if (PIND & 0x08)
@@ -183,58 +214,14 @@ int main()
 		{
 			toggle = 0;
 
-			i2c_start();
-			i2c_write(0x68<<1 | 0);
-			i2c_write(MPU_XOUT_H);
-//			i2c_write(6);
-			i2c_start();
-			i2c_write(0x68<<1 | 1);
-			data[0] = i2c_read_ack();
-			data[1] = i2c_read_ack();
-			data[2] = i2c_read_ack();
-			data[3] = i2c_read_ack();
-			data[4] = i2c_read_ack();
-			data[5] = i2c_read_ack();
-			data[6] = i2c_read_ack();
-			data[7] = i2c_read_nack();
-			i2c_stop();
-
-			signed int celcius = ((signed int)(data[6]<<8|data[7])/340) + 36;
-
-			out[2] = (data[0] & 0x80) ? '-' : '+';
-			out[3] = inttohex[data[0]>>4 & 0x0f];
-			out[4] = inttohex[data[0]>>0 & 0x0f];
-			out[5] = inttohex[data[1]>>4 & 0x0f];
-			out[6] = inttohex[data[1]>>0 & 0x0f];
-
-			out[10] = (data[2] & 0x80) ? '-' : '+';
-			out[11] = inttohex[data[2]>>4 & 0x0f];
-			out[12] = inttohex[data[2]>>0 & 0x0f];
-			out[13] = inttohex[data[3]>>4 & 0x0f];
-			out[14] = inttohex[data[3]>>0 & 0x0f];
-
-			out[18] = (data[4] & 0x80) ? '-' : '+';
-			out[19] = inttohex[data[4]>>4 & 0x0f];
-			out[20] = inttohex[data[4]>>0 & 0x0f];
-			out[21] = inttohex[data[5]>>4 & 0x0f];
-			out[22] = inttohex[data[5]>>0 & 0x0f];
-			
-			
-			out[26] = (celcius & 0x8000) ? '-' : '+';
-			out[27] = inttohex[celcius>>12 & 0x000f];
-			out[28] = inttohex[celcius>>8  & 0x000f];
-			out[29] = inttohex[celcius>>4  & 0x000f];
-			out[30] = inttohex[celcius>>0  & 0x000f];
+			uart_write(toks[1].text, toks[1].text_len);
 
 			uart_write(out, 32);
 		}
 		else
 		{
 			toggle = 0x20;
-//			uart_write("-\n", 2);
 		}
 
-//		if (sizeof(int) == 8)
-//			PORTB == 0;
 	}
 }

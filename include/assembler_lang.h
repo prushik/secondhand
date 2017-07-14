@@ -4,15 +4,16 @@
 #define KEY_SIZE_QWORD 3
 #define KEY_REG_RANGE_BEGIN 24
 #define KEY_REG_RANGE_END 39
-#define RESERVED_KEYWORDS 40
-static const char *reserved[] = {
+#define RESERVED_KEYWORDS 165
+static const char *reserved[RESERVED_KEYWORDS] = {
 	"byte","word","dword","qword",
 	"add","adc","adiw","sub",
 	"subi","sbc","sbci","sbiw",
 	"and","andi","or","ori", // combine and/andi and or/ori?
 	"eor","com","neg","sbr", // I would also like eor to be called xor
 	"cbr","inc","dec","tst",
-	"clr","ser","","",
+	"clr","ser","push","pop",
+	"jmp","ijmp","call","icall",
 	"rjmp","rcall","ret","reti",
 	"cpse","cp","cpc","cpi",
 	"sbrc","sbrs","sbic","sbis",

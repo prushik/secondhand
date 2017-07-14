@@ -1,18 +1,20 @@
+#include "host_config.h"
+
 struct token
 {
-	int type;			//type of token
-	int level;			//
-	int group_id;		//id of current group
-	int group_parent_id;//id of parent group
-	int group_depth;	//depth of group nesting
-	long sym;			//symbolic representation of token (machine readable)
-	int text_len;		//length of token text
-	const char *text;	//pointer to text of token
-	int argc;			//number of operands
-	int argv[6];		//token numbers of operands to this token
-	long custom_flags;	//reserved for application use
+	native type;			//type of token
+	native level;			//
+	native group_id;		//id of current group
+	native group_parent_id;//id of parent group
+	native group_depth;	//depth of group nesting
+	word sym;			//symbolic representation of token (machine readable)
+	word text_len;		//length of token text
+	const byte *text;	//pointer to text of token
+	native argc;			//number of operands
+	native argv[6];		//token numbers of operands to this token
+	word custom_flags;	//reserved for application use
 };
-
+/*
 #ifndef RESERVED_KEYWORDS
 	#define RESERVED_KEYWORDS 24
 	static const char *reserved[] = {"auto","break","case","char","const","continue","default","do","double","else","enum","extern","float","for","goto","if","int","long","register","return","short","signed","static","struct","switch","typedef","union","unsigned","void","volitile","while","_Packed"};
@@ -95,8 +97,8 @@ struct token
 
 #ifndef CHARSETS
 	#define CHARSETS 7
-	static const char *char_ini[] = {"0123456789",              "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",           " \r\n\t\0", "([{}])", "+-*/%><=!&|,^~.", "\"", "#;\\"};
-	static const char *char_set[] = {"0123456789xabcdefABCDEF", "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", " \r\n\t\0", "([{}])", "+-*/%><=!&|,^~.", "",   "#;\\"};
+	static const char *char_ini[] = {"0123456789",              "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",           " \r\n\t\0", "([{}])", "+-* /%><=!&|,^~.", "\"", "#;\\"};
+	static const char *char_set[] = {"0123456789xabcdefABCDEF", "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", " \r\n\t\0", "([{}])", "+-* /%><=!&|,^~.", "",   "#;\\"};
 	static const char *char_end[] = {"",                        "",                                                                "",          "",       "",                "\"", ""};
 #endif
 
@@ -126,7 +128,7 @@ struct token
 #endif
 #ifndef CHAR_TYPE_NUL
 	#define CHAR_TYPE_NUL CHAR_TYPE_INV
-#endif
+#endif*/
 
 int id_token_str(const char *token);
 int id_operator(const char *op_str, int len);
