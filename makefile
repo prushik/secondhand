@@ -1,14 +1,13 @@
 DEVICE     = atmega328p
 PROGRAMMER = arduino
-PORT       = /dev/ttyUSB0
+PORT       = /dev/arduino
 BAUD       = 57600
 FILENAME   = src/ass
-COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
+COMPILE    = avr-gcc -Wall -O3 -mmcu=$(DEVICE)
 SUDO       = sudo
 DEPS       = src/tokenizer.c
 CFLAGS     = -I./include
 LDFLAGS    = 
-
 
 all: clean build upload
 

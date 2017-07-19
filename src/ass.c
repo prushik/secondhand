@@ -148,30 +148,30 @@ void i2c_scan()
 	}
 }
 
-// This is our test assembly code
-const static char text[] = 
-"rjump main\n"
-"main:\n"
-"ldi	r16,0xff\n"
-"out	ddrb,r16\n"
-"ldi	r16,0x00\n"
-"loop:\n"
-"com	r16\n"
-"out	portb,r16\n"
-"ldi	r17,100\n"
-"outer:\n"
-"ldi	zh,high(40000)\n"
-"ldi	zl,low(40000)\n"
-"inner:\n"
-"sbiw	zl,1\n"
-"brne	inner\n"
-"dec	r17\n"
-"brne	outer\n"
-"rjmp	loop\n";
 
 
 int main()
 {
+	// This is our test assembly code
+	static char text[] = 
+		"rjump main\n"
+		"main:\n"
+		"ldi	r16,0xff\n"
+		"out	ddrb,r16\n"
+		"ldi	r16,0x00\n"
+		"loop:\n"
+		"com	r16\n"
+		"out	portb,r16\n"
+		"ldi	r17,100\n"
+		"outer:\n"
+		"ldi	zh,high(40000)\n"
+		"ldi	zl,low(40000)\n"
+		"inner:\n"
+		"sbiw	zl,1\n"
+		"brne	inner\n"
+		"dec	r17\n"
+		"brne	outer\n"
+		"rjmp	loop\n";
 	unsigned int toggle = 0, i;
 	unsigned char data[8];
 
@@ -192,17 +192,22 @@ int main()
 
 //	i2c_scan();
 
-//	for (i=0; i<0xff; i++)
-//		print_stat(i);
+	static struct token toks[91];
 
-	struct token toks[100];
-
-	int tlen = count_tokens(text,100);
+	uart_putchar('\n');
+	int tlen = count_tokens(text, (sizeof(text)));
+	uart_putchar('A');
+	uart_putchar('\n');
 
 //	toks = (struct token *)malloc(sizeof(struct token)*(tlen+1));
 
-	tokenize(text, 100, toks);
+	tokenize(text, (sizeof(text)), toks);
+	uart_putchar('B');
+	uart_putchar('\n');
 
+	tlen = count_tokens(text, (sizeof(text)));
+	uart_putchar('C');
+	uart_putchar('\n');
 	while (1)
 	{
 
@@ -214,9 +219,25 @@ int main()
 		{
 			toggle = 0;
 
-			uart_write(toks[1].text, toks[1].text_len);
+			out[4] = inttohex[tlen>>4];
+			out[5] = inttohex[tlen&0x0f];
+
+			out[7] = inttohex[((sizeof(toks))>>12)&0x0f];
+			out[8] = inttohex[((sizeof(toks))>>8)&0x0f];
+			out[9] = inttohex[((sizeof(toks))>>4)&0x0f];
+			out[10] = inttohex[(sizeof(toks))&0x0f];
 
 			uart_write(out, 32);
+
+			for (i=0;i<tlen;i++) 
+			{
+				uart_write(toks[i].text, toks[i].text_len);
+				uart_write("\n", 1);
+				_delay_ms(500);
+			}
+
+//			uart_write(toks[1].text, toks[1].text_len);
+
 		}
 		else
 		{

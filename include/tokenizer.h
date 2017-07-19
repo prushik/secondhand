@@ -1,18 +1,16 @@
-#include "host_config.h"
-
 struct token
 {
-	native type;			//type of token
-	native level;			//
-	native group_id;		//id of current group
-	native group_parent_id;//id of parent group
-	native group_depth;	//depth of group nesting
-	word sym;			//symbolic representation of token (machine readable)
-	word text_len;		//length of token text
-	const byte *text;	//pointer to text of token
-	native argc;			//number of operands
-	native argv[6];		//token numbers of operands to this token
-	word custom_flags;	//reserved for application use
+	unsigned int type;			//type of token
+	unsigned int level;			//
+//	unsigned int group_id;		//id of current group
+//	unsigned int group_parent_id;//id of parent group
+//	unsigned int group_depth;	//depth of group nesting
+	unsigned long sym;			//symbolic representation of token (machine readable)
+	unsigned int text_len;		//length of token text
+	const char *text;	//pointer to text of token
+//	unsigned int argc;			//number of operands
+//	unsigned int argv[6];		//token numbers of operands to this token
+//	unsigned long custom_flags;	//reserved for application use
 };
 /*
 #ifndef RESERVED_KEYWORDS
