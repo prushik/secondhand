@@ -6,6 +6,21 @@
 #include "lang_config.h"
 #include "tokenizer.h"
 
+/*void print_keys()
+{
+	int i;
+	for (i = 0; i < RESERVED_KEYWORDS; i++)
+	{
+		char hex[] = "0123456789abcdef";
+		uart_write("KEY_INSTR_", 10);
+		uart_write(reserved[i], strlen(reserved[i]));
+		uart_write("\t0x", 3);
+		uart_putchar(hex[(i>>4)&0x0f]);
+		uart_putchar(hex[i&0x0f]);
+		uart_putchar('\n');
+	}
+}*/
+
 static inline int token_boundary(const char *expr, int pos, int type, int start_pos)
 {
 	int i;

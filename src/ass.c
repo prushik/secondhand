@@ -13,6 +13,8 @@
 
 #include <util/setbaud.h>
 
+#include <avr/pgmspace.h>
+
 #include "tokenizer.h"
 
 void uart_init()
@@ -148,13 +150,11 @@ void i2c_scan()
 	}
 }
 
-
-
 int main()
 {
 	// This is our test assembly code
-	static char text[] = 
-		"rjump main\n"
+	static const char text[] = 
+		"rjump	main\n"
 		"main:\n"
 		"ldi	r16,0xff\n"
 		"out	ddrb,r16\n"
@@ -172,6 +172,7 @@ int main()
 		"dec	r17\n"
 		"brne	outer\n"
 		"rjmp	loop\n";
+
 	unsigned int toggle = 0, i;
 	unsigned char data[8];
 
@@ -192,6 +193,7 @@ int main()
 
 //	i2c_scan();
 
+//	print_keys();
 	static struct token toks[91];
 
 	uart_putchar('\n');
@@ -232,8 +234,8 @@ int main()
 			for (i=0;i<tlen;i++) 
 			{
 				uart_write(toks[i].text, toks[i].text_len);
-				uart_write("\n", 1);
-				_delay_ms(500);
+//				uart_write("\n", 1);
+				_delay_ms(200);
 			}
 
 //			uart_write(toks[1].text, toks[1].text_len);

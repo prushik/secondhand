@@ -3,7 +3,7 @@ PROGRAMMER = arduino
 PORT       = /dev/arduino
 BAUD       = 57600
 FILENAME   = src/ass
-COMPILE    = avr-gcc -Wall -O3 -mmcu=$(DEVICE)
+COMPILE    = avr-gcc -Wall -Os -mmcu=$(DEVICE)
 SUDO       = sudo
 DEPS       = src/tokenizer.c
 CFLAGS     = -I./include
